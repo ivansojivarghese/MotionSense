@@ -5,6 +5,7 @@ const CORE_ASSETS = [
   'res_m.css',
   'shake.js',
   'manifest.webmanifest',
+  'icons/icon-192.png',
   'icons/icon-192.svg',
   'icons/icon-512.svg',
   'fonts/static/GoogleSans-Regular.ttf'
