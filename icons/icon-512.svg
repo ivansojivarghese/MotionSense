@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="MotionSense icon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1f2a"/>
+      <stop offset="100%" stop-color="#1a4a66"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="112" fill="none" stroke="#e8f4ff" stroke-width="28"/>
+  <path d="M154 284 L219 219 L264 264 L338 190" fill="none" stroke="#7ee081" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

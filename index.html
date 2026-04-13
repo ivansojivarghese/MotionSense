@@ -4,6 +4,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="viewport-fit=cover, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
     <link href="res_m.css" rel="stylesheet" type="text/css">
+	<link rel="manifest" href="manifest.webmanifest">
+	<meta name="theme-color" content="#0b1f2a">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="MotionSense">
 	<title>MotionSense</title>
 	<style>
         @font-face {
@@ -1732,5 +1737,14 @@
 
         initializeDailyReset();
     </script>
+	<script>
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', function() {
+				navigator.serviceWorker.register('service-worker.js').catch(function(err) {
+					console.error('Service worker registration failed:', err);
+				});
+			});
+		}
+	</script>
 </body>
 </html>
