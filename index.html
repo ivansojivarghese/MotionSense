@@ -47,9 +47,25 @@
 			margin: 0 auto;
 		}
 
+		.landscapeUnsupported {
+			display: none;
+			max-width: 700px;
+			margin: 0 auto;
+			padding: 1rem;
+			border: 1px solid #8884;
+			border-radius: 12px;
+			text-align: center;
+			font-size: 1.1rem;
+			letter-spacing: 0.04rem;
+		}
+
 		@media screen and (orientation: landscape) {
 			.pwa {
 				display: none;
+			}
+
+			.landscapeUnsupported {
+				display: block;
 			}
 		}
 
@@ -202,6 +218,7 @@
 			<div class="unitToggle stars panel"><span class="starValue">0</span> / 50</div>
 		</div>
 	</div>
+	<div class="landscapeUnsupported">landscape view unsupported</div>
 
 	<script>
 		var op = { t: 250, te: 1000 };
