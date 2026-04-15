@@ -444,9 +444,39 @@
 			stepPeakArmed = true,
 			stepLastTimestamp = 0,
 			stepMagMean = 0,
-			stepMagDev = 0.2;
+			stepMagDev = 0.2,
+			orientationSuppressUntil = 0,
+			orientationSuppressMs = 1200,
+			orientationBucket = 'unknown';
 
 		var nDeviceTimeout = null;
+
+		function getOrientationBucketFromAngles(beta, gamma) {
+			var bVal = Math.abs(Math.round(beta || 0));
+			var gVal = Math.abs(Math.round(gamma || 0));
+			if (gVal >= 45) {
+				return 'landscape';
+			}
+			if (bVal >= 45) {
+				return 'portrait';
+			}
+			return 'unknown';
+		}
+
+		function suppressStepCountDuringRotation() {
+			orientationSuppressUntil = Date.now() + orientationSuppressMs;
+			rotation = true;
+			stepPeakArmed = true;
+			noStep = true;
+		}
+
+		function stepCountSuppressedByRotation() {
+			if (Date.now() < orientationSuppressUntil) {
+				return true;
+			}
+			rotation = false;
+			return false;
+		}
 
 		var motionType = "",
 			commuteMode = false,
@@ -794,9 +824,12 @@
 		setRecalibrateVisible(false);
 		resetDistanceTracking();
 
-		screen.orientation.addEventListener("change", function() {
-			// resetMotionParams();
-		});
+		if (screen.orientation && screen.orientation.addEventListener) {
+			screen.orientation.addEventListener("change", function() {
+				suppressStepCountDuringRotation();
+				// resetMotionParams();
+			});
+		}
 
 		function resetMotionParams() {
 			clearInterval(timerCountStepInterval);
@@ -1376,7 +1409,10 @@
 							refractoryMs = Math.min(380, Math.max(220, recentStepMs * 0.45));
 						}
 
-						if (linearMag <= stepThresholdLow) {
+						if (stepCountSuppressedByRotation()) {
+							stepPeakArmed = true;
+							noStep = true;
+						} else if (linearMag <= stepThresholdLow) {
 							stepPeakArmed = true;
 							noStep = false;
 						} else if (linearMag >= stepThresholdHigh && stepPeakArmed && !noStep && (time - stepLastTimestamp) >= refractoryMs && (gpsPos === null || (gpsPos && gpsPos.coords.speed > 0 && gpsPos.coords.speed <= 3))) {
@@ -1695,11 +1731,18 @@
 
 				var bVal = Math.abs(Math.round(event.beta)),
 					gVal = Math.abs(Math.round(event.gamma));
+				var currentBucket = getOrientationBucketFromAngles(event.beta, event.gamma);
+				if (orientationBucket !== 'unknown' && currentBucket !== 'unknown' && orientationBucket !== currentBucket) {
+					suppressStepCountDuringRotation();
+				}
+				orientationBucket = currentBucket;
 
 				if (bVal > 90 || gVal > 45) {
-					// rotation = true;
+					rotation = true;
 				} else {
-					rotation = false;
+					if (!stepCountSuppressedByRotation()) {
+						rotation = false;
+					}
 				}
 			// }
 
